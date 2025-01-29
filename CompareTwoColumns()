@@ -1,38 +1,50 @@
 Sub CompareTwoColumns()
-    Dim col1 As Range, col2 As Range, prod1 As String, prod2 As String, ws As Worksheet
+    Dim col1 As Range, col2 As Range
+    Dim prod1 As String, prod2 As String
+    Dim ws As Worksheet, difSheet As Worksheet
+    Dim lr As Long, r As Long
+    Dim dif1 As Long, dif2 As Long
+    Dim iscol2 As Range, iscol1 As Range
     
+    ' Set worksheets
+    Set ws = ActiveSheet
+    On Error Resume Next
+    Set difSheet = ThisWorkbook.Sheets("Differences")
+    On Error GoTo 0
+    If difSheet Is Nothing Then
+        Set difSheet = ThisWorkbook.Sheets.Add
+        difSheet.Name = "Differences"
+    End If
+    difSheet.Cells.ClearContents ' Clear previous results
     
-    Set col1 = Columns("D")
-    Set col2 = Columns("E")
-
-
+    ' Set columns and last row
+    Set col1 = ws.Columns("D")
+    Set col2 = ws.Columns("E")
+    lr = ws.Cells(ws.Rows.Count, "D").End(xlUp).Row ' Get last row from column D
     
-    lr = Columns("A:C").SpecialCells(xlCellTypeLastCell).Row
+    dif1 = 0: dif2 = 0 ' Initialize counters
     
     For r = 2 To lr
-    
-        prod1 = Cells(r, col1.Column).Value
-        prod2 = Cells(r, col2.Column).Value
+        prod1 = ws.Cells(r, col1.Column).Value
+        prod2 = ws.Cells(r, col2.Column).Value
         
-        'If prod1 is in col2'
+        ' Check if prod1 exists in col2 (with exact match)
         If prod1 <> "" Then
-            Set iscol2 = col2.Find(prod1)
+            Set iscol2 = col2.Find(prod1, LookIn:=xlValues, LookAt:=xlWhole, MatchCase:=False)
             If iscol2 Is Nothing Then
-                Cells(r, col1.Column).Interior.Color = vbYellow
+                ws.Cells(r, col1.Column).Interior.Color = vbYellow
                 dif1 = dif1 + 1
-                End If
             End If
-            
-        'If prod2 is in col1'
-        If prod2 <> "" Then
-            Set iscol1 = col1.Find(prod2)
-            If iscol1 Is Nothing Then
-                Cells(r, col2.Column).Interior.Color = vbRed
-                dif2 = dif2 + 1
-                Sheets("Differences").Cells(dif2, 1).Value = prod1
-                End If
-            End If
-        Next r
+        End If
         
-    
+        ' Check if prod2 exists in col1 (with exact match)
+        If prod2 <> "" Then
+            Set iscol1 = col1.Find(prod2, LookIn:=xlValues, LookAt:=xlWhole, MatchCase:=False)
+            If iscol1 Is Nothing Then
+                ws.Cells(r, col2.Column).Interior.Color = vbRed
+                dif2 = dif2 + 1
+                difSheet.Cells(dif2, 1).Value = prod2 ' Log prod2 (E column value)
+            End If
+        End If
+    Next r
 End Sub
