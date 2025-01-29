@@ -1,0 +1,28 @@
+Sub SplitRowsBySemicolon()
+    Dim ws As Worksheet
+    Set ws = ActiveSheet
+    
+    Set col = ws.Columns("E") 'change to whatever column'
+    
+    Dim lastrow As Long
+    lastrow = col.Cells(ws.Rows.Count).End(xlUp).Row
+    
+    Dim i As Long
+    For i = lastrow To 1 Step -1
+        Dim cellvalue As String
+        cellvalue = col.Cells(i).Value
+        
+        If InStr(1, cellvalue, ";") > 0 Then
+            Dim parts() As String
+            parts = Split(cellvalue, ";", 2)
+            
+            'update original cell'
+            col.Cells(i).Value = Trim(parts(0))
+            
+            'insert new row below'
+            ws.Rows(i + 1).Insert shift:=xlDown
+            col.Cells(i + 1).Value = Trim(parts(1))
+        End If
+    Next i
+
+End Sub
