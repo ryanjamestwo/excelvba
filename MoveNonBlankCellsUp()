@@ -1,0 +1,29 @@
+Sub MoveNonBlankCellsUp()
+    Dim ws As Worksheet
+    Set ws = ActiveSheet ' Update sheet as needed
+    
+    Dim targetCol As String
+    targetCol = "A" ' Column to process (e.g., "A", "B", etc.)
+    
+    Dim lastRow As Long
+    lastRow = ws.Cells(ws.Rows.Count, targetCol).End(xlUp).Row
+    
+    Application.ScreenUpdating = False ' Improve performance
+    
+    Dim i As Long, j As Long
+    For i = 1 To lastRow ' Loop from top to bottom
+        If IsEmpty(ws.Cells(i, targetCol)) Then
+            ' Find the next non-blank cell below
+            For j = i + 1 To lastRow
+                If Not IsEmpty(ws.Cells(j, targetCol)) Then
+                    ' Move the value up
+                    ws.Cells(i, targetCol).Value = ws.Cells(j, targetCol).Value
+                    ws.Cells(j, targetCol).ClearContents
+                    Exit For ' Move to the next blank cell
+                End If
+            Next j
+        End If
+    Next i
+    
+    Application.ScreenUpdating = True
+End Sub
