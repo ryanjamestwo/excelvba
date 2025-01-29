@@ -18,9 +18,10 @@ Sub CompareTwoColumns()
     difSheet.Cells.ClearContents ' Clear previous results
     
     ' Set columns and last row
-    Set col1 = ws.Columns("D")
-    Set col2 = ws.Columns("E")
-    lr = ws.Cells(ws.Rows.Count, "D").End(xlUp).Row ' Get last row from column D
+    Set col1 = ws.Columns("A")
+    Set col2 = ws.Columns("B")
+    lr = ws.Cells(ws.Rows.Count, "B").End(xlUp).Row ' Get last row from column '
+    
     
     dif1 = 0: dif2 = 0 ' Initialize counters
     
@@ -48,3 +49,4 @@ Sub CompareTwoColumns()
         End If
     Next r
 End Sub
+
