@@ -1,0 +1,38 @@
+Sub CompareTwoColumns()
+    Dim col1 As Range, col2 As Range, prod1 As String, prod2 As String, ws As Worksheet
+    
+    
+    Set col1 = Columns("D")
+    Set col2 = Columns("E")
+
+
+    
+    lr = Columns("A:C").SpecialCells(xlCellTypeLastCell).Row
+    
+    For r = 2 To lr
+    
+        prod1 = Cells(r, col1.Column).Value
+        prod2 = Cells(r, col2.Column).Value
+        
+        'If prod1 is in col2'
+        If prod1 <> "" Then
+            Set iscol2 = col2.Find(prod1)
+            If iscol2 Is Nothing Then
+                Cells(r, col1.Column).Interior.Color = vbYellow
+                dif1 = dif1 + 1
+                End If
+            End If
+            
+        'If prod2 is in col1'
+        If prod2 <> "" Then
+            Set iscol1 = col1.Find(prod2)
+            If iscol1 Is Nothing Then
+                Cells(r, col2.Column).Interior.Color = vbRed
+                dif2 = dif2 + 1
+                Sheets("Differences").Cells(dif2, 1).Value = prod1
+                End If
+            End If
+        Next r
+        
+    
+End Sub
